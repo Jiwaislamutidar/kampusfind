@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ItemCard from "../components/ItemCard";
 import SearchBar from "../components/SearchBar";
 import { CATEGORIES, LOCATIONS } from "../lib/constants";
+import { apiUrl } from "../lib/api";
 import type { Report, ReportStatus, ReportType } from "../types";
 
 type TypeFilter =
@@ -31,8 +32,6 @@ const TYPE_TABS: {
     label: "Sudah Kembali",
   },
 ];
-
-const API_URL = "http://localhost:5000";
 
 // =====================================================
 // HELPER
@@ -112,7 +111,7 @@ export default function FindPage() {
       setError("");
 
       const response = await fetch(
-        `${API_URL}/api/reports`
+        apiUrl("/api/reports")
       );
 
       if (!response.ok) {
@@ -171,7 +170,7 @@ export default function FindPage() {
           status: normalizeStatus(item.status),
 
           photoUrl: item.image_url
-            ? `${API_URL}/uploads/${item.image_url}`
+            ? apiUrl(`/uploads/${item.image_url}`)
             : "",
 
           reporterName:
@@ -398,9 +397,8 @@ export default function FindPage() {
           </p>
 
           <p className="mt-4 text-[12px] text-red-500">
-            Pastikan server Node.js berjalan di
-            localhost:5000 dan database MySQL
-            aktif.
+            Pastikan URL API dan database backend
+            sudah aktif.
           </p>
 
           <button

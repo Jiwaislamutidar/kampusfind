@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES, LOCATIONS } from '../lib/constants';
 import { addReport } from '../lib/store';
+import { apiUrl } from '../lib/api';
 
 const inputClass =
   'focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white p-3 text-[13.5px] outline-none resize-none';
@@ -136,7 +137,7 @@ export default function FormHilang() {
       }
 
       const res = await fetch(
-        'http://localhost:5000/api/reports',
+        apiUrl('/api/reports'),
         {
           method: 'POST',
           body: formData,
@@ -160,7 +161,7 @@ export default function FormHilang() {
 
       if (data.foto) {
         backendPhotoUrl =
-          `http://localhost:5000/uploads/${data.foto}`;
+          apiUrl(`/uploads/${data.foto}`);
       }
 
       // =====================================================

@@ -64,11 +64,18 @@ const upload = multer({
 // DATABASE
 // =====================================================
 
+const dbHost = process.env.DB_HOST || "localhost";
+const isAivenDatabase = dbHost.endsWith(".aivencloud.com");
+
 const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
+  host: dbHost,
+  port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "kampusfind",
+  ssl: isAivenDatabase
+    ? { rejectUnauthorized: false }
+    : undefined,
 
   waitForConnections: true,
   connectionLimit: 10,

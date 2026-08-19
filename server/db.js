@@ -1,10 +1,17 @@
 const mysql = require("mysql2/promise");
 
+const dbHost = process.env.DB_HOST || "localhost";
+
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "kampusfind",
+  host: dbHost,
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "kampusfind",
+  ssl: dbHost.endsWith(".aivencloud.com")
+    ? { rejectUnauthorized: false }
+    : undefined,
+
   waitForConnections: true,
   connectionLimit: 10,
 });

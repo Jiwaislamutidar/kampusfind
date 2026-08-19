@@ -10,6 +10,7 @@ import {
   resetDemoData,
   updateClaimStatus,
 } from "../lib/store";
+import { apiUrl } from "../lib/api";
 
 import type { ReportStatus } from "../index";
 
@@ -80,7 +81,7 @@ export default function AdminPage() {
         setErrorReports("");
 
         const response = await fetch(
-          "http://localhost:5000/api/reports"
+          apiUrl("/api/reports")
         );
 
         const result = await response.json();
@@ -152,7 +153,7 @@ export default function AdminPage() {
   ) {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/reports/${id}/status`,
+        apiUrl(`/api/reports/${id}/status`),
         {
           method: "PUT",
           headers: {

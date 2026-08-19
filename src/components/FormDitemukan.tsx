@@ -10,8 +10,7 @@ import type {
   ItemCondition,
   StorageOption,
 } from "../index";
-
-const API_URL = "http://localhost:5000";
+import { apiUrl } from "../lib/api";
 
 const inputClass =
   "focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white p-3 text-[13.5px] outline-none resize-none";
@@ -267,7 +266,7 @@ export default function FormDitemukan() {
       // =================================================
 
       const response = await fetch(
-        `${API_URL}/api/reports`,
+        apiUrl("/api/reports"),
         {
           method: "POST",
           body: formData,

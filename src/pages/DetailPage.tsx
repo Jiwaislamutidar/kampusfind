@@ -4,8 +4,7 @@ import ClaimModal from "../components/ClaimModal";
 import SmartMatch from "../components/SmartMatch";
 import StatusBadge from "../components/StatusBadge";
 import type { Report } from "../index";
-
-const API_URL = "http://localhost:5000";
+import { apiUrl } from "../lib/api";
 
 export default function DetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -46,7 +45,7 @@ export default function DetailPage() {
         setError("");
 
         const response = await fetch(
-          `${API_URL}/api/reports/${id}`
+          apiUrl(`/api/reports/${id}`)
         );
 
         const result = await response.json();
@@ -124,9 +123,7 @@ export default function DetailPage() {
            */
 
           photoUrl: item.image_url
-            ? `${API_URL}/uploads/${String(
-                item.image_url
-              ).replace(/^\/+/, "")}`
+            ? apiUrl(`/uploads/${String(item.image_url).replace(/^\/+/, "")}`)
             : "",
 
           status:
