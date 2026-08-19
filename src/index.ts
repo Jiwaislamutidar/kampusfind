@@ -11,10 +11,10 @@ export type ReportStatus =
 export type ItemCondition = "BAIK" | "RUSAK_RINGAN" | "RUSAK_BERAT";
 
 export type StorageOption =
-  | "Ruang Dosen"
-  | "Satpam / Pos Keamanan"
-  | "Sekretariat Hima"
-  | "Dibawa Penemu";
+  | "RUANG_DOSEN"
+  | "SEKRETARIAT_HIMA"
+  | "OB"
+  | "PRIBADI";
 
 export type ClaimStatus =
   | "MENUNGGU_VERIFIKASI"

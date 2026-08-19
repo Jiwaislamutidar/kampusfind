@@ -29,28 +29,34 @@ export default function Navbar() {
           KampusFind
         </Link>
 
-        {/* Tombol Hamburger */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 text-slate-600 rounded-lg hover:bg-slate-100 focus:outline-none transition-colors"
-          aria-label="Toggle Menu"
-        >
-          {isOpen ? (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
-        </button>
-      </div>
+        <div className="relative">
+          {/* Tombol Hamburger */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 focus:outline-none"
+            aria-label="Toggle Menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
+          >
+            {isOpen ? (
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
 
-      {/* Isi Hamburger Menu */}
-      {isOpen && (
-        <div className="bg-white border-b border-slate-200 px-6 pt-2 pb-5 space-y-1 text-sm font-medium">
+          {/* Isi Hamburger Menu */}
+          <div
+            id="mobile-navigation"
+            className={`mobile-menu-panel ${isOpen ? "mobile-menu-panel-open" : ""}`}
+            aria-hidden={!isOpen}
+          >
+            <div className="space-y-1 rounded-xl border border-slate-200 bg-white p-3 text-sm font-medium shadow-xl shadow-slate-900/10">
           <Link
             to="/"
             onClick={() => setIsOpen(false)}
@@ -104,14 +110,16 @@ export default function Navbar() {
               <Link
                 to="/login/admin"
                 onClick={() => setIsOpen(false)}
-                className="block py-2 font-semibold text-indigo-600 hover::text-indigo-700"
+                className="block py-2 font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Login Admin
               </Link>
             </div>
           )}
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
