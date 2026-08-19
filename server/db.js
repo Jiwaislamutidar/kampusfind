@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise");
+import mysql from "mysql2/promise";
 
 const dbHost = process.env.DB_HOST || "localhost";
 
@@ -16,4 +16,4 @@ const db = mysql.createPool({
   connectionLimit: 10,
 });
 
-module.exports = db;
+export default db;
