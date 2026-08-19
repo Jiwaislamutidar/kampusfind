@@ -212,6 +212,20 @@ export default function FindPage() {
 
   useEffect(() => {
     fetchReports();
+
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") {
+        fetchReports();
+      }
+    };
+
+    window.addEventListener("focus", refreshWhenVisible);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+
+    return () => {
+      window.removeEventListener("focus", refreshWhenVisible);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
   }, []);
 
   // =====================================================
@@ -331,7 +345,7 @@ export default function FindPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-6xl px-5 py-12">
+      <div className="find-page mx-auto max-w-6xl px-5 py-12">
         <div className="mb-8">
           <p className="text-[12.5px] font-semibold uppercase tracking-wide text-[var(--color-royal)]">
             Pencarian
@@ -363,7 +377,7 @@ export default function FindPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-6xl px-5 py-12">
+      <div className="find-page mx-auto max-w-6xl px-5 py-12">
         <div className="mb-8">
           <p className="text-[12.5px] font-semibold uppercase tracking-wide text-[var(--color-royal)]">
             Pencarian
@@ -406,10 +420,10 @@ export default function FindPage() {
   // =====================================================
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12">
+    <div className="find-page mx-auto max-w-6xl px-5 py-12">
       {/* HEADER */}
 
-      <div className="mb-8">
+      <div className="find-reveal mb-8">
         <p className="text-[12.5px] font-semibold uppercase tracking-wide text-[var(--color-royal)]">
           Pencarian
         </p>
@@ -427,7 +441,7 @@ export default function FindPage() {
 
       {/* SEARCH DAN FILTER */}
 
-      <div className="space-y-4">
+      <div className="find-reveal find-reveal-delay-1 space-y-4">
         <SearchBar
           value={query}
           onChange={setQuery}
@@ -518,14 +532,14 @@ export default function FindPage() {
 
       {/* JUMLAH HASIL */}
 
-      <p className="mt-6 text-[13px] text-[var(--color-ink)]/50">
+      <p className="find-reveal find-reveal-delay-2 mt-6 text-[13px] text-[var(--color-ink)]/50">
         {filtered.length} laporan ditemukan
       </p>
 
       {/* HASIL KOSONG */}
 
       {filtered.length === 0 ? (
-        <div className="card-surface mt-4 flex flex-col items-center gap-2 px-6 py-16 text-center">
+        <div className="find-empty card-surface mt-4 flex flex-col items-center gap-2 px-6 py-16 text-center">
           <p className="font-display text-[15px] font-semibold text-[var(--color-navy)]">
             Belum ada laporan yang cocok
           </p>
@@ -539,11 +553,14 @@ export default function FindPage() {
         /* LIST LAPORAN */
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((r) => (
-            <ItemCard
+          {filtered.map((r, index) => (
+            <div
               key={r.id}
-              report={r}
-            />
+              className="find-card-reveal"
+              style={{ animationDelay: `${Math.min(index, 5) * 55}ms` }}
+            >
+              <ItemCard report={r} />
+            </div>
           ))}
         </div>
       )}

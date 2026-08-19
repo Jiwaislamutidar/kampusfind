@@ -318,7 +318,12 @@ export default function FormDitemukan() {
        * sampai diverifikasi admin.
        */
 
-      const createdId = result?.data?.id || "";
+      const createdId = result?.id || "";
+
+      if (!createdId) {
+        throw new Error("Server tidak mengembalikan ID laporan.");
+      }
+
       navigate(`/lapor-sukses?id=${createdId}&type=DITEMUKAN`);
 
     } catch (err) {

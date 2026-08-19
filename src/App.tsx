@@ -63,14 +63,14 @@ function App() {
             element={<LoginPage />}
           />
 
+          <Route path="/lapor-sukses" element={<SuccessPage />} />
+
           {/* Admin */}
           <Route element={<ProtectedRoute />}>
             <Route
               path="/admin"
               element={<AdminPage />}
             />
-
-          <Route path="/lapor-sukses" element={<SuccessPage />} />
 
           </Route>
 

@@ -167,7 +167,7 @@ export default function FormHilang() {
       // 3. SIMPAN KE LOCAL STORE
       // =====================================================
 
-      const newReport = addReport({
+      addReport({
         type: 'HILANG',
         itemName,
         category,
@@ -197,7 +197,7 @@ export default function FormHilang() {
       // 4. PINDAH KE DETAIL LAPORAN
       // =====================================================
 
-      navigate(`/lapor-sukses?id=${newReport.id}&type=HILANG`);
+      navigate(`/lapor-sukses?id=${data.id}&type=HILANG`);
     } catch (err) {
       console.error(
         'Backend Error:',
