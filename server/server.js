@@ -80,6 +80,14 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  connectTimeout: 10000,
+  acquireTimeout: 10000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+});
+
+db.on("error", (error) => {
+  console.error("MySQL pool error:", error);
 });
 
 // =====================================================
@@ -662,11 +670,20 @@ app.put(
 // SERVER
 // =====================================================
 
-const PORT =
-  process.env.PORT || 5000;
+export default app;
 
-app.listen(PORT, () => {
-  console.log(
-    `Server berjalan di http://localhost:${PORT}`
-  );
-});
+// Vercel manages the HTTP server. Local development still uses Express listen().
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
+    console.log(
+      `Server berjalan di http://localhost:${PORT}`
+    );
+  });
+}
+
+// Keep CommonJS compatibility for Vercel configurations that expect module.exports.
+if (typeof module !== "undefined") {
+  module.exports = app;
+}
