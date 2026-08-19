@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 import path from "path";
 import multer from "multer";
 import fs from "fs";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
+import db from "./db.js";
 
 // =====================================================
 // SETUP
@@ -64,30 +64,14 @@ const upload = multer({
 // DATABASE
 // =====================================================
 
-const dbHost = process.env.DB_HOST || "localhost";
-const isAivenDatabase = dbHost.endsWith(".aivencloud.com");
+function databaseErrorResponse(res, error, context) {
+  console.error(`${context}:`, error);
 
-const db = mysql.createPool({
-  host: dbHost,
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "kampusfind",
-  ssl: isAivenDatabase
-    ? { rejectUnauthorized: false }
-    : undefined,
-
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  connectTimeout: 10000,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
-});
-
-db.on("error", (error) => {
-  console.error("MySQL pool error:", error);
-});
+  return res.status(503).json({
+    success: false,
+    message: "Database sedang tidak tersedia. Coba lagi beberapa saat lagi.",
+  });
+}
 
 // =====================================================
 // TEST DATABASE
@@ -105,13 +89,7 @@ app.get("/api/test-db", async (req, res) => {
       data: rows,
     });
   } catch (error) {
-    console.error("Database error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Database gagal terhubung",
-      error: error.message,
-    });
+    databaseErrorResponse(res, error, "Database error");
   }
 });
 
@@ -144,10 +122,7 @@ app.post("/api/admin/register", async (req, res) => {
   } catch (error) {
     console.error("Register admin error:", error);
 
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    databaseErrorResponse(res, error, "Register admin database error");
   }
 });
 
@@ -203,10 +178,7 @@ app.post("/api/admin/login", async (req, res) => {
   } catch (error) {
     console.error("Login admin error:", error);
 
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    databaseErrorResponse(res, error, "Login admin database error");
   }
 });
 
@@ -310,11 +282,7 @@ async function saveReport(req, res, type) {
       error
     );
 
-    res.status(500).json({
-      success: false,
-      message: "Gagal menyimpan laporan",
-      error: error.message,
-    });
+    databaseErrorResponse(res, error, `Error menyimpan laporan ${type}`);
   }
 }
 
@@ -475,12 +443,7 @@ app.post(
         error
       );
 
-      res.status(500).json({
-        success: false,
-        message:
-          "Gagal menyimpan laporan",
-        error: error.message,
-      });
+      databaseErrorResponse(res, error, "Error /api/reports");
     }
   }
 );
@@ -524,12 +487,7 @@ app.get("/api/reports", async (req, res) => {
       error
     );
 
-    res.status(500).json({
-      success: false,
-      message:
-        "Gagal mengambil data laporan",
-      error: error.message,
-    });
+    databaseErrorResponse(res, error, "Error mengambil reports");
   }
 });
 
@@ -587,12 +545,7 @@ app.get(
         error
       );
 
-      res.status(500).json({
-        success: false,
-        message:
-          "Gagal mengambil detail laporan",
-        error: error.message,
-      });
+      databaseErrorResponse(res, error, "Error mengambil detail");
     }
   }
 );
@@ -655,12 +608,7 @@ app.put(
         error
       );
 
-      res.status(500).json({
-        success: false,
-        message:
-          "Gagal memperbarui status laporan",
-        error: error.message,
-      });
+      databaseErrorResponse(res, error, "Error update status");
     }
   }
 );
