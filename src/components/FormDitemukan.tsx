@@ -10,7 +10,7 @@ import type {
   ItemCondition,
   StorageOption,
 } from "../index";
-import { apiUrl } from "../lib/api";
+import { supabase } from "../supabaseClient";
 
 const inputClass =
   "focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white p-3 text-[13.5px] outline-none resize-none";
@@ -184,115 +184,34 @@ export default function FormDitemukan() {
     setSubmitting(true);
 
     try {
-      // =================================================
-      // FORMDATA
-      // =================================================
+      const { data: createdReport, error: insertError } = await supabase
+        .from("reports")
+        .insert({
+          type: "DITEMUKAN",
+          reporter_name: reporterName.trim(),
+          reporter_contact: reporterContact.trim(),
+          category,
+          color: color.trim(),
+          item_name: itemName.trim(),
+          description: description.trim(),
+          distinctive_features: distinctiveFeatures.trim(),
+          date_seen: date,
+          time_seen: time,
+          location: finalLocation,
+          location_detail: detailLocation.trim() || "-",
+          status: "MENUNGGU",
+          image_url: previewUrl || null,
+        })
+        .select("id")
+        .single();
 
-      const formData = new FormData();
-
-      formData.append(
-        "type",
-        "DITEMUKAN"
-      );
-
-      formData.append(
-        "nama_pelapor",
-        reporterName.trim()
-      );
-
-      formData.append(
-        "no_whatsapp",
-        reporterContact.trim()
-      );
-
-      formData.append(
-        "jenis_barang",
-        category
-      );
-
-      formData.append(
-        "warna",
-        color.trim()
-      );
-
-      formData.append(
-        "nama_barang",
-        itemName.trim()
-      );
-
-      formData.append(
-        "deskripsi",
-        description.trim()
-      );
-
-      formData.append(
-        "ciri_khas",
-        distinctiveFeatures.trim()
-      );
-
-      formData.append(
-        "tanggal",
-        date
-      );
-
-      formData.append(
-        "jam",
-        time
-      );
-
-      formData.append(
-        "lokasi",
-        finalLocation
-      );
-
-      formData.append(
-        "detail_lokasi",
-        detailLocation.trim() || "-"
-      );
-
-      // =================================================
-      // FOTO
-      // =================================================
-
-      if (foto) {
-        formData.append(
-          "foto",
-          foto
-        );
-      }
-
-      // =================================================
-      // KIRIM KE NODE.JS
-      // =================================================
-
-      const response = await fetch(
-        apiUrl("/api/reports"),
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      // Coba baca response JSON
-      const result = await response.json();
-
-      // =================================================
-      // CEK RESPONSE
-      // =================================================
-
-      if (
-        !response.ok ||
-        !result.success
-      ) {
-        throw new Error(
-          result.message ||
-            "Gagal menyimpan laporan ke database."
-        );
+      if (insertError || !createdReport) {
+        throw insertError || new Error("Gagal menyimpan laporan ke database.");
       }
 
       console.log(
         "Laporan ditemukan berhasil disimpan:",
-        result
+        createdReport
       );
 
       // =================================================
@@ -317,7 +236,7 @@ export default function FormDitemukan() {
        * sampai diverifikasi admin.
        */
 
-      const createdId = result?.id || "";
+      const createdId = createdReport.id || "";
 
       if (!createdId) {
         throw new Error("Server tidak mengembalikan ID laporan.");

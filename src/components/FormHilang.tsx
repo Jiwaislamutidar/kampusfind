@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES, LOCATIONS } from '../lib/constants';
 import { addReport } from '../lib/store';
-import { apiUrl } from '../lib/api';
+import { supabase } from '../supabaseClient';
 
 const inputClass =
   'focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white p-3 text-[13.5px] outline-none resize-none';
@@ -88,80 +88,29 @@ export default function FormHilang() {
     setError('');
 
     try {
-      // =====================================================
-      // 1. KIRIM DATA KE NODE.JS + MYSQL
-      // =====================================================
+      const { data, error: insertError } = await supabase
+        .from('reports')
+        .insert({
+          type: 'HILANG',
+          reporter_name: reporterName,
+          reporter_contact: reporterContact,
+          category,
+          color,
+          item_name: itemName,
+          description,
+          distinctive_features: distinctiveFeatures,
+          date_seen: date,
+          time_seen: time,
+          location: finalLocation,
+          location_detail: detailLocation || '-',
+          status: 'MENUNGGU',
+          image_url: previewUrl || null,
+        })
+        .select('id')
+        .single();
 
-      const formData = new FormData();
-
-      formData.append('type', 'HILANG');
-      formData.append(
-        'nama_pelapor',
-        reporterName
-      );
-      formData.append(
-        'no_whatsapp',
-        reporterContact
-      );
-      formData.append(
-        'jenis_barang',
-        category
-      );
-      formData.append('warna', color);
-      formData.append(
-        'nama_barang',
-        itemName
-      );
-      formData.append(
-        'deskripsi',
-        description
-      );
-      formData.append(
-        'ciri_khas',
-        distinctiveFeatures
-      );
-      formData.append('tanggal', date);
-      formData.append('jam', time);
-      formData.append(
-        'lokasi',
-        finalLocation
-      );
-      formData.append(
-        'detail_lokasi',
-        detailLocation || '-'
-      );
-
-      // Upload foto kalau ada
-      if (foto) {
-        formData.append('foto', foto);
-      }
-
-      const res = await fetch(
-        apiUrl('/api/reports'),
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(
-          data.message ||
-            'Gagal menyimpan laporan ke database.'
-        );
-      }
-
-      // =====================================================
-      // 2. URL FOTO DARI BACKEND
-      // =====================================================
-
-      let backendPhotoUrl = '';
-
-      if (data.foto) {
-        backendPhotoUrl =
-          apiUrl(`/uploads/${data.foto}`);
+      if (insertError) {
+        throw insertError;
       }
 
       // =====================================================
@@ -189,7 +138,7 @@ export default function FormHilang() {
         // Gunakan foto backend jika tersedia,
         // jika tidak gunakan preview lokal
         photoUrl:
-          backendPhotoUrl ||
+          previewUrl ||
           previewUrl ||
           undefined,
       });

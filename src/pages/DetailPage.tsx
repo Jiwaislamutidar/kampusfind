@@ -4,7 +4,7 @@ import ClaimModal from "../components/ClaimModal";
 import SmartMatch from "../components/SmartMatch";
 import StatusBadge from "../components/StatusBadge";
 import type { Report } from "../index";
-import { apiUrl } from "../lib/api";
+import { supabase } from "../supabaseClient";
 
 export default function DetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -44,20 +44,15 @@ export default function DetailPage() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(
-          apiUrl(`/api/reports/${id}`)
-        );
+        const { data: item, error: reportError } = await supabase
+          .from("reports")
+          .select("*")
+          .eq("id", id)
+          .single();
 
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-          throw new Error(
-            result.message ||
-              "Laporan tidak ditemukan."
-          );
+        if (reportError || !item) {
+          throw reportError || new Error("Laporan tidak ditemukan.");
         }
-
-        const item = result.data;
 
         // =================================================
         // MYSQL SNAKE_CASE -> FRONTEND CAMEL_CASE
@@ -123,7 +118,7 @@ export default function DetailPage() {
            */
 
           photoUrl: item.image_url
-            ? apiUrl(`/uploads/${String(item.image_url).replace(/^\/+/, "")}`)
+            ? String(item.image_url)
             : "",
 
           status:

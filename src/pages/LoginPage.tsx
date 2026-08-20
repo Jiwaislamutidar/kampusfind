@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiUrl } from "../lib/api";
+import bcrypt from "bcryptjs";
+import { supabase } from "../supabaseClient";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -23,24 +24,32 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch(apiUrl("/api/admin/login"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const { data: admin, error: adminError } = await supabase
+        .from("admins")
+        .select("id, email, password")
+        .eq("email", email.trim())
+        .maybeSingle();
 
-      const data = await response.json();
+      if (adminError) {
+        throw adminError;
+      }
 
-      if (response.ok && data.success) {
+      const passwordMatches = admin
+        ? await bcrypt.compare(password, admin.password)
+        : false;
+
+      if (passwordMatches) {
         localStorage.setItem("adminLoggedIn", "true");
         navigate("/admin");
       } else {
-        setError(data.message || "Email atau password salah.");
+        setError("Email atau password salah.");
       }
     } catch (err) {
-      setError("Gagal terhubung ke server. Pastikan backend berjalan.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Gagal memproses login admin."
+      );
     }
   };
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ItemCard from "../components/ItemCard";
 import SearchBar from "../components/SearchBar";
 import { CATEGORIES, LOCATIONS } from "../lib/constants";
-import { apiUrl } from "../lib/api";
+import { supabase } from "../supabaseClient";
 import type { Report, ReportStatus, ReportType } from "../types";
 
 type TypeFilter =
@@ -110,28 +110,18 @@ export default function FindPage() {
       setLoading(true);
       setError("");
 
-      const response = await fetch(
-        apiUrl("/api/reports")
-      );
+      const { data, error: reportsError } = await supabase
+        .from("reports")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      if (!response.ok) {
-        throw new Error(
-          `Server mengembalikan status ${response.status}.`
-        );
+      if (reportsError) {
+        throw reportsError;
       }
 
-      const result = await response.json();
-
-      if (!result.success) {
+      if (!Array.isArray(data)) {
         throw new Error(
-          result.message ||
-            "Gagal mengambil data laporan."
-        );
-      }
-
-      if (!Array.isArray(result.data)) {
-        throw new Error(
-          "Format data laporan dari server tidak valid."
+          "Format data laporan dari Supabase tidak valid."
         );
       }
 
@@ -142,7 +132,7 @@ export default function FindPage() {
       // =================================================
 
       const mappedReports: Report[] =
-        result.data.map((item: any) => ({
+        data.map((item: any) => ({
           id: String(item.id),
 
           type: normalizeType(item.type),
@@ -170,7 +160,7 @@ export default function FindPage() {
           status: normalizeStatus(item.status),
 
           photoUrl: item.image_url
-            ? apiUrl(`/uploads/${item.image_url}`)
+            ? String(item.image_url)
             : "",
 
           reporterName:

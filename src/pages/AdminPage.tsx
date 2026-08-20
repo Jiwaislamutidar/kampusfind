@@ -10,7 +10,7 @@ import {
   resetDemoData,
   updateClaimStatus,
 } from "../lib/store";
-import { apiUrl } from "../lib/api";
+import { supabase } from "../supabaseClient";
 
 import type { ReportStatus } from "../index";
 
@@ -80,20 +80,16 @@ export default function AdminPage() {
         setLoadingReports(true);
         setErrorReports("");
 
-        const response = await fetch(
-          apiUrl("/api/reports")
-        );
+        const { data, error: reportsError } = await supabase
+          .from("reports")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-          throw new Error(
-            result.message ||
-              "Gagal mengambil data laporan"
-          );
+        if (reportsError) {
+          throw reportsError;
         }
 
-        setReports(result.data);
+        setReports(data || []);
       } catch (error) {
         console.error(
           "Error mengambil reports:",
@@ -152,26 +148,13 @@ export default function AdminPage() {
     status: ReportStatus
   ) {
     try {
-      const response = await fetch(
-        apiUrl(`/api/reports/${id}/status`),
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            status,
-          }),
-        }
-      );
+      const { error: updateError } = await supabase
+        .from("reports")
+        .update({ status })
+        .eq("id", id);
 
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(
-          result.message ||
-            "Gagal memperbarui status"
-        );
+      if (updateError) {
+        throw updateError;
       }
 
       // Ambil ulang data dari database
