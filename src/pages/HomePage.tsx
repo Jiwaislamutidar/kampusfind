@@ -63,10 +63,10 @@ const TRUST_POINTS = [
 export default function HomePage() {
   return (
     <div className="home-page overflow-hidden">
-      <section className="relative border-b border-[var(--color-line)] bg-[var(--color-navy)] text-white">
+      <section className="home-hero relative border-b border-[var(--color-line)] bg-[var(--color-navy)] text-white">
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-[0.1]" />
         <div className="home-signal-lines pointer-events-none absolute inset-y-0 right-0 hidden w-2/5 opacity-60 lg:block" />
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-5 pb-14 pt-12 md:grid-cols-[1fr_0.78fr] md:items-center md:pb-20 md:pt-20">
+        <div className="home-hero-content relative mx-auto grid max-w-6xl gap-12 px-5 pb-14 pt-24 md:grid-cols-[1fr_0.78fr] md:items-center md:pb-20 md:pt-28">
           <div className="home-reveal home-reveal-delay-1">
             <h1 className="mt-6 max-w-xl font-display text-[40px] font-bold leading-[1.06] tracking-tight sm:text-[56px]">
               Satu barang kembali, Satu kampus lebih peduli.

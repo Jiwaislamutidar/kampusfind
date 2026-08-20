@@ -5,10 +5,10 @@ import { addReport } from '../lib/store';
 import { supabase } from '../supabaseClient';
 
 const inputClass =
-  'focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white p-3 text-[13.5px] outline-none resize-none';
+  'form-input focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white p-3 text-[13.5px] outline-none resize-none';
 
 const labelClass =
-  'mb-1.5 block text-[13px] font-medium text-[var(--color-navy)]';
+  'form-label mb-1.5 block text-[13px] font-medium text-[var(--color-navy)]';
 
 export default function FormHilang() {
   const navigate = useNavigate();
@@ -169,7 +169,7 @@ export default function FormHilang() {
   // =====================================================
 
   return (
-    <div className="mx-auto max-w-2xl rounded-2xl border border-[var(--color-line)] bg-white p-6 shadow-sm sm:p-8">
+    <div className="form-card mx-auto max-w-3xl rounded-2xl border border-[var(--color-line)] bg-white p-5 shadow-sm sm:p-8">
 
       {/* HEADER */}
       <div className="mb-8">
@@ -198,7 +198,7 @@ export default function FormHilang() {
       {/* FORM */}
       <form
         onSubmit={handleSubmit}
-        className="space-y-5"
+        className="form-layout space-y-5"
       >
 
         {/* NAMA + WHATSAPP */}
