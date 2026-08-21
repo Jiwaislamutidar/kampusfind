@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => window.innerWidth >= 768);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,6 +14,14 @@ export default function Navbar() {
       sessionStorage.getItem("adminLoggedIn") === "true";
     setIsAdmin(loggedIn);
   }, [location]);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
+    const handleViewportChange = (event: MediaQueryListEvent) => setIsOpen(event.matches);
+
+    desktopQuery.addEventListener("change", handleViewportChange);
+    return () => desktopQuery.removeEventListener("change", handleViewportChange);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("adminLoggedIn");
@@ -37,17 +45,17 @@ export default function Navbar() {
             aria-hidden={!isOpen}
           >
             <div className="navbar-links">
-              <Link to="/" onClick={() => setIsOpen(false)} className="navbar-link">Beranda</Link>
-              <Link to="/temukan" onClick={() => setIsOpen(false)} className="navbar-link">Cari Barang</Link>
-              <Link to="/lapor/hilang" onClick={() => setIsOpen(false)} className="navbar-link">Lapor Hilang</Link>
-              <Link to="/lapor/ditemukan" onClick={() => setIsOpen(false)} className="navbar-link">Lapor Ditemukan</Link>
+              <Link to="/" className="navbar-link">Beranda</Link>
+              <Link to="/temukan" className="navbar-link">Cari Barang</Link>
+              <Link to="/lapor/hilang" className="navbar-link">Lapor Hilang</Link>
+              <Link to="/lapor/ditemukan" className="navbar-link">Lapor Ditemukan</Link>
               {isAdmin ? (
                 <>
-                  <Link to="/admin" onClick={() => setIsOpen(false)} className="navbar-link navbar-link-accent">Dashboard Admin</Link>
-                  <button onClick={() => { setIsOpen(false); handleLogout(); }} className="navbar-link navbar-link-danger">Logout</button>
+                  <Link to="/admin" className="navbar-link navbar-link-accent">Dashboard Admin</Link>
+                  <button onClick={handleLogout} className="navbar-link navbar-link-danger">Logout</button>
                 </>
               ) : (
-                <Link to="/login/admin" onClick={() => setIsOpen(false)} className="navbar-link navbar-link-accent">Login Admin</Link>
+                <Link to="/login/admin" className="navbar-link navbar-link-accent">Login Admin</Link>
               )}
             </div>
           </div>
@@ -63,11 +71,11 @@ export default function Navbar() {
             >
               {isOpen ? (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M0 12h16M4 18h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
                 </svg>
               ) : (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M0 12h16M4 18h16" />
                 </svg>
               )}
             </button>

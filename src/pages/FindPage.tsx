@@ -66,10 +66,6 @@ function normalizeDate(value: unknown): string {
 
   const date = String(value);
 
-  // Kalau dari MySQL bentuknya:
-  // 2026-08-18T00:00:00.000Z
-  // atau
-  // 2026-08-18 00:00:00
   return date.slice(0, 10);
 }
 

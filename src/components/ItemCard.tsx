@@ -13,12 +13,12 @@ export default function ItemCard({ report }: { report: Report }) {
       to={`/barang/${report.id}`}
       className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-[0_6px_20px_rgba(11,30,63,0.08)]"
     >
-      <div className="relative flex h-28 items-center justify-center border-b border-[var(--color-line)] bg-[var(--color-sky)] sm:h-36">
+      <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden border-b border-[var(--color-line)] bg-[var(--color-sky)]">
         {report.photoUrl ? (
           <img
             src={report.photoUrl}
             alt={report.itemName}
-            className="h-full w-full object-cover"
+            className="absolute inset-0 block h-full w-full object-cover"
           />
         ) : (
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none">

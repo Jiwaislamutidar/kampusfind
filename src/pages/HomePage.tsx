@@ -121,9 +121,34 @@ export default function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>('.home-scroll-reveal');
+
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach((section) => section.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="home-page overflow-hidden">
-      <section className="home-hero relative border-b border-[var(--color-line)] bg-[var(--color-navy)] text-white">
+      <section className="home-scroll-reveal home-hero relative border-b border-[var(--color-line)] bg-[var(--color-navy)] text-white">
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-[0.1]" />
         <div className="home-signal-lines pointer-events-none absolute inset-y-0 right-0 hidden w-2/5 opacity-60 lg:block" />
         <div className="home-hero-content relative mx-auto grid max-w-6xl gap-12 px-5 pb-14 pt-24 md:grid-cols-[1fr_0.78fr] md:items-center md:pb-20 md:pt-28">
@@ -149,9 +174,9 @@ export default function HomePage() {
             </div>
 
             <div className="mt-8 grid max-w-xl grid-cols-3 border-t border-white/10 pt-4">
-              <div><p className="font-display text-[20px] font-bold text-white">24</p><p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/40">Laporan aktif</p></div>
-              <div className="border-l border-white/10 pl-4"><p className="font-display text-[20px] font-bold text-[var(--color-cyan)]">08</p><p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/40">Cocok hari ini</p></div>
-              <div className="border-l border-white/10 pl-4"><p className="font-display text-[20px] font-bold text-lime-300">91%</p><p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/40">Terverifikasi</p></div>
+              <div><p className="home-stat-value home-stat-value-1 font-display text-[20px] font-bold text-white">24</p><p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/40">Laporan aktif</p></div>
+              <div className="border-l border-white/10 pl-4"><p className="home-stat-value home-stat-value-2 font-display text-[20px] font-bold text-[var(--color-cyan)]">08</p><p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/40">Cocok hari ini</p></div>
+              <div className="border-l border-white/10 pl-4"><p className="home-stat-value home-stat-value-3 font-display text-[20px] font-bold text-lime-300">91%</p><p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/40">Terverifikasi</p></div>
             </div>
           </div>
 
@@ -187,7 +212,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="home-action-section border-b border-[var(--color-line)]">
+      <section className="home-scroll-reveal home-action-section border-b border-[var(--color-line)]">
         <div className="mx-auto grid max-w-6xl gap-3 px-5 py-6 sm:grid-cols-3">
           <Link to="/lapor/hilang" className="home-action-card home-reveal home-reveal-delay-1 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
             <span className="home-action-number home-action-number-warn flex h-10 w-10 items-center justify-center font-display text-[18px] font-bold">01</span>
@@ -207,7 +232,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="home-process-section border-b border-[var(--color-line)] bg-white">
+      <section className="home-scroll-reveal home-process-section border-b border-[var(--color-line)] bg-white">
         <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 lg:py-24">
           <div className="home-reveal home-reveal-delay-1">
             <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--color-royal)]"><IconSparkles size={15} /> Dibuat untuk situasi nyata</p>
@@ -233,7 +258,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="home-flow-section border-y border-[var(--color-line)]">
+      <section className="home-scroll-reveal home-flow-section border-y border-[var(--color-line)]">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div><p className="text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--color-royal)]">Alur yang jelas</p><h2 className="mt-3 font-display text-[28px] font-bold text-[var(--color-navy)] sm:text-[34px]">Dari laporan sampai kembali</h2></div>
@@ -252,7 +277,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-20">
+      <section className="home-scroll-reveal mx-auto max-w-6xl px-5 py-20">
         <div className="home-reveal relative overflow-hidden bg-[var(--color-royal)] px-6 py-10 text-white sm:px-12 sm:py-12">
           <div className="pointer-events-none absolute -right-12 -top-20 h-60 w-60 rounded-full border-[28px] border-white/10" />
           <div className="relative flex flex-col justify-between gap-8 md:flex-row md:items-center">

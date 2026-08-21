@@ -65,6 +65,7 @@ export default function AdminPage() {
   const [reports, setReports] = useState<DatabaseReport[]>([]);
   const [loadingReports, setLoadingReports] = useState(true);
   const [errorReports, setErrorReports] = useState("");
+  const [deletingReportId, setDeletingReportId] = useState<number | null>(null);
 
   // ==========================================
   // REFRESH KEY
@@ -170,6 +171,55 @@ export default function AdminPage() {
           ? error.message
           : "Gagal memperbarui status laporan"
       );
+    }
+  }
+
+  async function handleDeleteReport(report: DatabaseReport) {
+    if (
+      !window.confirm(
+        `Hapus laporan "${report.item_name}"? Data yang sudah dihapus tidak dapat dikembalikan.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setDeletingReportId(report.id);
+
+      const { error: deleteError } = await supabase
+        .from("reports")
+        .delete()
+        .eq("id", report.id);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      const storageMarker = "/storage/v1/object/public/report-images/";
+      const imagePath = report.image_url?.includes(storageMarker)
+        ? decodeURIComponent(report.image_url.split(storageMarker)[1])
+        : null;
+
+      if (imagePath) {
+        const { error: storageError } = await supabase.storage
+          .from("report-images")
+          .remove([imagePath]);
+
+        if (storageError) {
+          console.warn("Foto laporan tidak berhasil dihapus:", storageError);
+        }
+      }
+
+      refresh();
+    } catch (error) {
+      console.error("Error menghapus laporan:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Gagal menghapus laporan"
+      );
+    } finally {
+      setDeletingReportId(null);
     }
   }
 
@@ -458,6 +508,10 @@ export default function AdminPage() {
                   Ubah status
                 </th>
 
+                <th className="px-4 py-3 font-medium">
+                  Aksi
+                </th>
+
               </tr>
 
             </thead>
@@ -525,6 +579,18 @@ export default function AdminPage() {
 
                     </select>
 
+                  </td>
+
+                  {/* HAPUS LAPORAN */}
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteReport(r)}
+                      disabled={deletingReportId === r.id}
+                      className="rounded-lg border border-red-200 px-2.5 py-1.5 text-[12px] font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {deletingReportId === r.id ? "Menghapus..." : "Hapus"}
+                    </button>
                   </td>
 
                 </tr>
