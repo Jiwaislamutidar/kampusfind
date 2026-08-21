@@ -13,7 +13,7 @@ export default function ItemCard({ report }: { report: Report }) {
       to={`/barang/${report.id}`}
       className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-[0_6px_20px_rgba(11,30,63,0.08)]"
     >
-      <div className="relative flex h-36 items-center justify-center border-b border-[var(--color-line)] bg-[var(--color-sky)]">
+      <div className="relative flex h-28 items-center justify-center border-b border-[var(--color-line)] bg-[var(--color-sky)] sm:h-36">
         {report.photoUrl ? (
           <img
             src={report.photoUrl}
@@ -38,11 +38,11 @@ export default function ItemCard({ report }: { report: Report }) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="font-display text-[15px] font-semibold leading-snug text-[var(--color-navy)] group-hover:text-[var(--color-royal)]">
+      <div className="flex flex-1 flex-col gap-2 p-3 sm:p-4">
+        <h3 className="font-display text-[13px] font-semibold leading-snug text-[var(--color-navy)] group-hover:text-[var(--color-royal)] sm:text-[15px]">
           {report.itemName}
         </h3>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-[var(--color-ink)]/60">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] text-[var(--color-ink)]/60 sm:gap-x-3 sm:text-[12.5px]">
           <span className="inline-flex items-center gap-1">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
               <path d="M12 22s7-6.2 7-12A7 7 0 0 0 5 10c0 5.8 7 12 7 12Z" stroke="currentColor" strokeWidth="1.6" />
@@ -60,7 +60,7 @@ export default function ItemCard({ report }: { report: Report }) {
         </div>
         <div className="mt-auto flex items-center justify-between pt-1">
           <StatusBadge status={report.status} />
-          <span className="text-[12.5px] font-semibold text-[var(--color-royal)] group-hover:underline">
+          <span className="text-[10.5px] font-semibold text-[var(--color-royal)] group-hover:underline sm:text-[12.5px]">
             Lihat detail →
           </span>
         </div>

@@ -25,13 +25,16 @@ function ScrollToTop() {
 }
 
 function App() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
   return (
     <div className="flex min-h-screen flex-col">
       <ScrollToTop />
 
       <Navbar />
 
-      <main className="flex-1">
+      <main className={isHome ? "flex-1" : "flex-1 pt-20"}>
         <Routes>
 
           {/* Halaman utama */}

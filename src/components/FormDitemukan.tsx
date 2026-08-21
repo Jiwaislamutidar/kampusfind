@@ -288,7 +288,7 @@ export default function FormDitemukan() {
   // =====================================================
 
   return (
-    <div className="form-card mx-auto max-w-3xl rounded-2xl border border-[var(--color-line)] bg-white p-5 shadow-sm sm:p-8">
+    <div className="form-card stacked-card mx-auto max-w-3xl rounded-2xl border border-[var(--color-line)] bg-white p-5 shadow-sm sm:p-8">
 
       {/* HEADER */}
 

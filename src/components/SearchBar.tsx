@@ -6,7 +6,7 @@ export default function SearchBar({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="relative">
+    <div className="search-field relative">
       <svg
         width="17"
         height="17"
@@ -21,7 +21,7 @@ export default function SearchBar({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Cari nama barang, kategori, atau lokasi..."
-        className="focus-ring w-full rounded-xl border border-[var(--color-line)] bg-white py-3 pl-10 pr-3.5 text-[13.5px] outline-none"
+        className="w-full bg-transparent py-3 pl-10 pr-3.5 text-[13.5px] outline-none"
       />
     </div>
   );

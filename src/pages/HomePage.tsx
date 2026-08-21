@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   IconArrowRight,
@@ -9,6 +10,7 @@ import {
   IconShieldCheck,
   IconSparkles,
 } from "@tabler/icons-react";
+import { supabase } from "../supabaseClient";
 
 const STEPS = [
   {
@@ -33,11 +35,29 @@ const STEPS = [
   },
 ];
 
-const RECENT_ACTIVITY = [
-  { item: "KTM Fakultas Teknik", location: "Perpustakaan", time: "12 menit lalu", status: "Dicari", tone: "blue" },
-  { item: "Earphone Wireless Putih", location: "Laboratorium", time: "34 menit lalu", status: "Ditemukan", tone: "cyan" },
-  { item: "Kunci Motor + Gantungan", location: "Lapangan", time: "1 jam lalu", status: "Kembali", tone: "green" },
-];
+type RecentActivity = {
+  id: string;
+  item: string;
+  location: string;
+  time: string;
+  status: string;
+  tone: "blue" | "cyan" | "green";
+};
+
+function formatRelativeTime(createdAt: string) {
+  const elapsedMinutes = Math.max(
+    0,
+    Math.floor((Date.now() - new Date(createdAt).getTime()) / 60000)
+  );
+
+  if (elapsedMinutes < 1) return "Baru saja";
+  if (elapsedMinutes < 60) return `${elapsedMinutes} menit lalu`;
+
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  if (elapsedHours < 24) return `${elapsedHours} jam lalu`;
+
+  return `${Math.floor(elapsedHours / 24)} hari lalu`;
+}
 
 const TRUST_POINTS = [
   {
@@ -61,6 +81,46 @@ const TRUST_POINTS = [
 ];
 
 export default function HomePage() {
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchRecentActivity() {
+      const { data } = await supabase
+        .from("reports")
+        .select("id, type, item_name, location, created_at, status")
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (!isMounted || !data) return;
+
+      setRecentActivity(
+        data.map((report) => {
+          const isFound = report.type === "DITEMUKAN";
+          const isReturned = report.status === "SUDAH_KEMBALI";
+
+          return {
+            id: String(report.id),
+            item: report.item_name || "Barang tanpa nama",
+            location: report.location || "Lokasi belum diisi",
+            time: formatRelativeTime(report.created_at),
+            status: isReturned ? "Kembali" : isFound ? "Ditemukan" : "Dicari",
+            tone: isReturned ? "green" : isFound ? "cyan" : "blue",
+          };
+        })
+      );
+    }
+
+    fetchRecentActivity();
+    const refreshTimer = window.setInterval(fetchRecentActivity, 30000);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(refreshTimer);
+    };
+  }, []);
+
   return (
     <div className="home-page overflow-hidden">
       <section className="home-hero relative border-b border-[var(--color-line)] bg-[var(--color-navy)] text-white">
@@ -106,8 +166,8 @@ export default function HomePage() {
                 <span className="flex items-center gap-1.5 text-[11px] text-[var(--color-cyan)]"><span className="home-live-dot h-1.5 w-1.5 rounded-full bg-[var(--color-cyan)]" /> Live</span>
               </div>
               <div className="divide-y divide-white/10">
-                {RECENT_ACTIVITY.map((activity) => (
-                  <Link to="/temukan" key={activity.item} className="home-reveal home-reveal-delay-3 group flex gap-3 py-4 first:pt-5 last:pb-1">
+                {recentActivity.length > 0 ? recentActivity.map((activity) => (
+                  <Link to={`/barang/${activity.id}`} key={activity.id} className="home-reveal home-reveal-delay-3 group flex gap-3 py-4 first:pt-5 last:pb-1">
                     <span className={`home-activity-marker home-activity-marker-${activity.tone} mt-1 h-2.5 w-2.5 shrink-0 rounded-full`} />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-[13px] font-semibold text-white/90 group-hover:text-[var(--color-cyan)]">{activity.item}</span>
@@ -115,7 +175,9 @@ export default function HomePage() {
                     </span>
                     <span className="flex shrink-0 flex-col items-end gap-1 text-[10px] text-white/35"><span>{activity.time}</span><span className={`home-activity-label home-activity-label-${activity.tone}`}>{activity.status}</span></span>
                   </Link>
-                ))}
+                )) : (
+                  <p className="py-6 text-[12px] text-white/45">Belum ada aktivitas terbaru.</p>
+                )}
               </div>
               <Link to="/temukan" className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 text-[12px] font-semibold text-[var(--color-cyan)]">
                 Lihat semua laporan <IconChevronRight size={16} />

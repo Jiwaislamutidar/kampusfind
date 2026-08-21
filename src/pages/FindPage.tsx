@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ItemCard from "../components/ItemCard";
 import SearchBar from "../components/SearchBar";
 import { CATEGORIES, LOCATIONS } from "../lib/constants";
@@ -96,10 +96,29 @@ export default function FindPage() {
   const [location, setLocation] = useState("");
 
   const [date, setDate] = useState("");
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
+
+  function openDatePicker() {
+    const input = dateInputRef.current;
+
+    if (!input) {
+      return;
+    }
+
+    const pickerInput = input as HTMLInputElement & {
+      showPicker?: () => void;
+    };
+
+    if (pickerInput.showPicker) {
+      pickerInput.showPicker();
+    } else {
+      input.focus();
+    }
+  }
 
   // =====================================================
   // AMBIL DATA DARI NODE.JS + MYSQL
@@ -429,7 +448,7 @@ export default function FindPage() {
 
       {/* SEARCH DAN FILTER */}
 
-      <div className="find-reveal find-reveal-delay-1 space-y-4">
+      <div className="find-reveal find-reveal-delay-1 find-search-panel space-y-4">
         <SearchBar
           value={query}
           onChange={setQuery}
@@ -437,7 +456,9 @@ export default function FindPage() {
 
         {/* FILTER TIPE */}
 
-        <div className="flex flex-wrap gap-2">
+        <div className="find-type-filter">
+          <span className="find-filter-heading">Jenis laporan</span>
+          <div className="flex flex-wrap gap-2">
           {TYPE_TABS.map((t) => (
             <button
               key={t.value}
@@ -454,67 +475,62 @@ export default function FindPage() {
               {t.label}
             </button>
           ))}
+          </div>
         </div>
 
         {/* FILTER DETAIL */}
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="find-detail-filters grid gap-3 sm:grid-cols-3">
           {/* KATEGORI */}
 
-          <select
-            value={category}
-            onChange={(e) =>
-              setCategory(e.target.value)
-            }
-            className="focus-ring rounded-xl border border-[var(--color-line)] bg-white p-2.5 text-[13px] outline-none"
-          >
-            <option value="">
-              Semua kategori
-            </option>
-
-            {CATEGORIES.map((c) => (
-              <option
-                key={c}
-                value={c}
-              >
-                {c}
-              </option>
-            ))}
-          </select>
+          <label className={`find-filter-field ${category ? "find-filter-field-active" : ""}`}>
+            <span>Kategori</span>
+            <strong>{category || "Semua kategori"}</strong>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              aria-label="Filter kategori"
+            >
+              <option value="">Semua kategori</option>
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </label>
 
           {/* LOKASI */}
 
-          <select
-            value={location}
-            onChange={(e) =>
-              setLocation(e.target.value)
-            }
-            className="focus-ring rounded-xl border border-[var(--color-line)] bg-white p-2.5 text-[13px] outline-none"
-          >
-            <option value="">
-              Semua lokasi
-            </option>
-
-            {LOCATIONS.map((l) => (
-              <option
-                key={l}
-                value={l}
-              >
-                {l}
-              </option>
-            ))}
-          </select>
+          <label className={`find-filter-field ${location ? "find-filter-field-active" : ""}`}>
+            <span>Lokasi</span>
+            <strong>{location || "Semua lokasi"}</strong>
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              aria-label="Filter lokasi"
+            >
+              <option value="">Semua lokasi</option>
+              {LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </label>
 
           {/* TANGGAL */}
 
-          <input
-            type="date"
-            value={date}
-            onChange={(e) =>
-              setDate(e.target.value)
-            }
-            className="focus-ring rounded-xl border border-[var(--color-line)] bg-white p-2.5 text-[13px] outline-none"
-          />
+          <label className={`find-filter-field ${date ? "find-filter-field-active" : ""}`}>
+            <span>Tanggal</span>
+            <strong>{date || "Pilih tanggal"}</strong>
+            <input
+              ref={dateInputRef}
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              onClick={openDatePicker}
+              aria-label="Filter tanggal"
+            />
+            <svg className="find-date-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2" stroke="currentColor" strokeWidth="1.8" />
+              <path d="M7.5 3v4M16.5 3v4M3.5 9h17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </label>
         </div>
       </div>
 
@@ -540,7 +556,7 @@ export default function FindPage() {
       ) : (
         /* LIST LAPORAN */
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {filtered.map((r, index) => (
             <div
               key={r.id}

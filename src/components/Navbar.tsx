@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,7 +23,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`relative z-50 px-4 py-3 font-sans antialiased sm:px-6 sm:py-4 ${isHome ? "navbar-home" : "bg-[var(--color-paper)]"}`}>
+    <nav className={`navbar-fixed z-50 px-4 py-3 font-sans antialiased sm:px-6 sm:py-4 ${isHome ? "navbar-home" : "bg-[var(--color-paper)]"}`}>
       <div className={`navbar-shell mx-auto flex max-w-6xl items-center ${isOpen ? "navbar-shell-open" : ""}`}>
         <Link to="/" className="navbar-brand shrink-0 text-xl font-bold tracking-tight text-indigo-600 hover:opacity-90">
           <img src="/favicon.svg" alt="" className="h-7 w-7" />
@@ -52,25 +52,26 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Tombol Hamburger */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            className="navbar-toggle"
-            aria-label="Toggle Menu"
-            aria-expanded={isOpen}
-            aria-controls="mobile-navigation"
-          >
-            {isOpen ? (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
+          <div className="navbar-controls">
+            <button
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              className="navbar-toggle"
+              aria-label="Toggle Menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
+            >
+              {isOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M0 12h16M4 18h16" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </nav>
