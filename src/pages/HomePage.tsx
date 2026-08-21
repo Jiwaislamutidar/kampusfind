@@ -214,17 +214,17 @@ export default function HomePage() {
 
       <section className="home-scroll-reveal home-action-section border-b border-[var(--color-line)]">
         <div className="mx-auto grid max-w-6xl gap-3 px-5 py-6 sm:grid-cols-3">
-          <Link to="/lapor/hilang" className="home-action-card home-reveal home-reveal-delay-1 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
+          <Link to="/lapor/hilang" className="home-side-reveal home-side-reveal-left home-action-card home-reveal home-reveal-delay-1 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
             <span className="home-action-number home-action-number-warn flex h-10 w-10 items-center justify-center font-display text-[18px] font-bold">01</span>
             <span className="flex-1"><span className="block text-[13px] font-bold text-[var(--color-navy)]">Saya kehilangan barang</span><span className="mt-1 block text-[11px] text-[var(--color-ink)]/55">Buat laporan baru</span></span>
             <IconArrowRight size={17} className="text-[var(--color-royal)] transition-transform group-hover:translate-x-1" />
           </Link>
-          <Link to="/lapor/ditemukan" className="home-action-card home-reveal home-reveal-delay-2 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
+          <Link to="/lapor/ditemukan" className="home-side-reveal home-side-reveal-center home-action-card home-reveal home-reveal-delay-2 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
             <span className="home-action-number home-action-number-success flex h-10 w-10 items-center justify-center font-display text-[18px] font-bold">02</span>
             <span className="flex-1"><span className="block text-[13px] font-bold text-[var(--color-navy)]">Saya menemukan barang</span><span className="mt-1 block text-[11px] text-[var(--color-ink)]/55">Bantu pemilik menemukannya</span></span>
             <IconArrowRight size={17} className="text-[var(--color-royal)] transition-transform group-hover:translate-x-1" />
           </Link>
-          <Link to="/temukan" className="home-action-card home-reveal home-reveal-delay-3 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
+          <Link to="/temukan" className="home-side-reveal home-side-reveal-right home-action-card home-reveal home-reveal-delay-3 group flex items-center gap-4 border border-[var(--color-line)] p-4 transition-[border-color,background-color] duration-300 hover:border-[var(--color-royal)] hover:bg-[var(--color-sky)]/30">
             <span className="home-action-number home-action-number-info flex h-10 w-10 items-center justify-center font-display text-[18px] font-bold">03</span>
             <span className="flex-1"><span className="block text-[13px] font-bold text-[var(--color-navy)]">Saya sedang mencari</span><span className="mt-1 block text-[11px] text-[var(--color-ink)]/55">Jelajahi semua laporan</span></span>
             <IconArrowRight size={17} className="text-[var(--color-royal)] transition-transform group-hover:translate-x-1" />
@@ -234,7 +234,7 @@ export default function HomePage() {
 
       <section className="home-scroll-reveal home-process-section border-b border-[var(--color-line)] bg-white">
         <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 lg:py-24">
-          <div className="home-reveal home-reveal-delay-1">
+          <div className="home-side-reveal home-side-reveal-left home-reveal home-reveal-delay-1">
             <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--color-royal)]"><IconSparkles size={15} /> Dibuat untuk situasi nyata</p>
             <h2 className="mt-4 max-w-md font-display text-[30px] font-bold leading-tight text-[var(--color-navy)] sm:text-[38px]">Dari panik menjadi proses yang jelas.</h2>
             <p className="mt-5 max-w-md text-[14px] leading-7 text-[var(--color-ink)]/60">KampusFind membantu kamu tahu harus mulai dari mana, apa yang terjadi berikutnya, dan kapan barang bisa diambil.</p>
@@ -242,7 +242,7 @@ export default function HomePage() {
             <div className="mt-12 hidden border-t border-[var(--color-line)] pt-4 sm:block">
             </div>
           </div>
-          <div className="home-process-rail">
+          <div className="home-side-reveal home-side-reveal-right home-process-rail">
             {TRUST_POINTS.map((point, index) => (
               <div key={point.label} className={`home-process-step home-reveal home-reveal-delay-${index + 1}`}>
                 <div className={`home-process-number home-process-number-${point.tone}`}>{String(index + 1).padStart(2, "0")}</div>
@@ -261,12 +261,12 @@ export default function HomePage() {
       <section className="home-scroll-reveal home-flow-section border-y border-[var(--color-line)]">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div><p className="text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--color-royal)]">Alur yang jelas</p><h2 className="mt-3 font-display text-[28px] font-bold text-[var(--color-navy)] sm:text-[34px]">Dari laporan sampai kembali</h2></div>
-            <p className="max-w-xs text-[13px] leading-6 text-[var(--color-ink)]/55">Semua pihak tahu langkah berikutnya, tanpa perlu menebak-nebak.</p>
+            <div className="home-side-reveal home-side-reveal-left"><p className="text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--color-royal)]">Alur yang jelas</p><h2 className="mt-3 font-display text-[28px] font-bold text-[var(--color-navy)] sm:text-[34px]">Dari laporan sampai kembali</h2></div>
+            <p className="home-side-reveal home-side-reveal-right max-w-xs text-[13px] leading-6 text-[var(--color-ink)]/55">Semua pihak tahu langkah berikutnya, tanpa perlu menebak-nebak.</p>
           </div>
           <div className="mt-10 grid gap-8 md:grid-cols-4">
             {STEPS.map((step, index) => (
-              <div key={step.n} className={`home-reveal home-reveal-delay-${index + 1} relative border-t-2 border-[var(--color-royal)] pt-4`}>
+              <div key={step.n} className={`home-side-reveal ${index % 2 === 0 ? "home-side-reveal-left" : "home-side-reveal-right"} home-reveal home-reveal-delay-${index + 1} relative border-t-2 border-[var(--color-royal)] pt-4`}>
                 <span className="font-mono text-[11px] font-bold text-[var(--color-royal)]">{step.n}</span>
                 <h3 className="mt-3 font-display text-[16px] font-bold text-[var(--color-navy)]">{step.title}</h3>
                 <p className="mt-2 text-[13px] leading-6 text-[var(--color-ink)]/60">{step.desc}</p>
@@ -281,8 +281,8 @@ export default function HomePage() {
         <div className="home-reveal relative overflow-hidden bg-[var(--color-royal)] px-6 py-10 text-white sm:px-12 sm:py-12">
           <div className="pointer-events-none absolute -right-12 -top-20 h-60 w-60 rounded-full border-[28px] border-white/10" />
           <div className="relative flex flex-col justify-between gap-8 md:flex-row md:items-center">
-            <div><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--color-cyan)]">Jangan tunggu terlalu lama</p><h2 className="mt-3 max-w-lg font-display text-[28px] font-bold leading-tight sm:text-[34px]">Satu laporan kecil bisa mempercepat kepulangan barang.</h2></div>
-            <div className="flex shrink-0 flex-col gap-3 sm:flex-row"><Link to="/lapor/hilang" className="inline-flex items-center justify-center gap-2 bg-white px-5 py-3 text-[13px] font-bold text-[var(--color-royal)] transition-colors hover:bg-[var(--color-cyan)]">Lapor sekarang <IconArrowRight size={17} /></Link><Link to="/temukan" className="inline-flex items-center justify-center gap-2 border border-white/30 px-5 py-3 text-[13px] font-bold text-white transition-colors hover:bg-white/10">Cari barang</Link></div>
+            <div className="home-side-reveal home-side-reveal-left"><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--color-cyan)]">Jangan tunggu terlalu lama</p><h2 className="mt-3 max-w-lg font-display text-[28px] font-bold leading-tight sm:text-[34px]">Satu laporan kecil bisa mempercepat kepulangan barang.</h2></div>
+            <div className="home-side-reveal home-side-reveal-right flex shrink-0 flex-col gap-3 sm:flex-row"><Link to="/lapor/hilang" className="inline-flex items-center justify-center gap-2 bg-white px-5 py-3 text-[13px] font-bold text-[var(--color-royal)] transition-colors hover:bg-[var(--color-cyan)]">Lapor sekarang <IconArrowRight size={17} /></Link><Link to="/temukan" className="inline-flex items-center justify-center gap-2 border border-white/30 px-5 py-3 text-[13px] font-bold text-white transition-colors hover:bg-white/10">Cari barang</Link></div>
           </div>
         </div>
       </section>
