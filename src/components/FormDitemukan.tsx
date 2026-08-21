@@ -184,6 +184,28 @@ export default function FormDitemukan() {
     setSubmitting(true);
 
     try {
+      let imageUrl: string | null = null;
+
+      if (foto) {
+        const filePath = `${crypto.randomUUID()}-${foto.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("report-images")
+          .upload(filePath, foto, {
+            contentType: foto.type,
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from("report-images")
+          .getPublicUrl(filePath);
+
+        imageUrl = publicUrlData.publicUrl;
+      }
+
       const { data: createdReport, error: insertError } = await supabase
         .from("reports")
         .insert({
@@ -200,7 +222,7 @@ export default function FormDitemukan() {
           location: finalLocation,
           location_detail: detailLocation.trim() || "-",
           status: "MENUNGGU",
-          image_url: previewUrl || null,
+          image_url: imageUrl,
         })
         .select("id")
         .single();
